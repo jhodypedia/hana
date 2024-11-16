@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HanaFuda Auto Grow</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Toastr CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+
+    <!-- FontAwesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <!-- Particle.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+
+    <!-- reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+    <!-- Custom CSS -->
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Particles Background -->
+    <div id="particles-js"></div> <!-- Particle.js Container -->
+    
+    <!-- Main Content -->
+    <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="row justify-content-center w-100">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow-lg">
+                    <div class="card-body">
+                        <h4 class="card-title text-center mb-4">HanaFuda Auto Grow</h4>
+
+                        <!-- Pemberitahuan Auth Code -->
+                        <div class="alert alert-warning text-center mb-4" role="alert">
+                            <strong>Perhatian!</strong> Untuk memulai, masukkan <strong>Auth Code</strong> Anda. Jika Anda belum memilikinya, Anda bisa mendapatkannya dengan mengikuti instruksi pada website resmi.
+                        </div>
+
+                        <form id="authForm">
+                            <div class="mb-3">
+                                <label for="authCode" class="form-label">Masukkan Auth Code:</label>
+                                <input type="text" id="authCode" name="authCode" class="form-control" required>
+                            </div>
+                            
+                            <button type="button" class="btn btn-primary w-100" id="btnProcess">Proses</button>
+                        </form>
+                        
+                        <!-- Loading spinner -->
+                        <div id="loading" class="d-none text-center mt-3">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Memproses...</p>
+                        </div>
+
+                        <!-- Result Container -->
+                        <div id="result" class="mt-3"></div>
+                    </div>
+
+                    <!-- Hubungi Kami dengan Icon (Tanpa Garis Pembatas) -->
+                    <div class="card-footer text-center">
+                        <h5>Hubungi Kami</h5>
+                        <a href="https://t.me/whysir" target="_blank" class="btn btn-outline-info btn-sm mx-1">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/jhody.id" target="_blank" class="btn btn-outline-primary btn-sm mx-1">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="mailto:jhodypedia@gmail.com" class="btn btn-outline-danger btn-sm mx-1">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                        <a href="https://twitter.com/jhodypedia" target="_blank" class="btn btn-outline-info btn-sm mx-1">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="text-center py-3">
+        <p class="mb-0">Created by <a href="https://t.me/whysir" target="_blank" class="text-decoration-none">Jhody <i class="fab fa-telegram"></i></a></p>
+    </footer>
+
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="/js/app.js"></script>
+
+    <script>
+        // Particle.js configuration
+        particlesJS("particles-js", {
+            particles: {
+                number: {
+                    value: 100,
+                    density: {
+                        enable: true,
+                        value_area: 800
+                    }
+                },
+                color: {
+                    value: "#ffffff"
+                },
+                shape: {
+                    type: "circle",
+                    stroke: {
+                        width: 0,
+                        color: "#000000"
+                    },
+                    polygon: {
+                        nb_sides: 5
+                    },
+                    image: {
+                        src: "",
+                        width: 100,
+                        height: 100
+                    }
+                },
+                opacity: {
+                    value: 0.5,
+                    random: true,
+                    anim: {
+                        enable: true,
+                        speed: 1,
+                        opacity_min: 0.1,
+                        sync: false
+                    }
+                },
+                size: {
+                    value: 3,
+                    random: true,
+                    anim: {
+                        enable: true,
+                        speed: 40,
+                        size_min: 0.1,
+                        sync: false
+                    }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#ffffff",
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 6,
+                    direction: "none",
+                    random: false,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false,
+                    attract: {
+                        enable: false,
+                        rotateX: 600,
+                        rotateY: 1200
+                    }
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: "repulse"
+                    },
+                    onclick: {
+                        enable: true,
+                        mode: "push"
+                    }
+                }
+            },
+            retina_detect: true
+        });
+    </script>
+</body>
+</html>

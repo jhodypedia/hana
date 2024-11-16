@@ -1,0 +1,21 @@
+{
+  "name": "hanafuda",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "fake-useragent": "^1.0.1",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7"
+  }
+}
