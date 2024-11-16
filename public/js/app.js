@@ -1,52 +1,52 @@
-$('#btnProcess').on('click', function() {
-    const authCode = $('#authCode').val();
-    const recaptchaResponse = grecaptcha.getResponse();
-
-    // Cek apakah authCode dan CAPTCHA sudah diisi
-    if (!authCode || !recaptchaResponse) {
-        toastr.error("Please complete the CAPTCHA and provide the Auth Code.");
-        return;
-    }
-
-    // Tampilkan modal reCAPTCHA jika belum selesai
-    $('#recaptchaModal').modal('show');
-
-    // Render reCAPTCHA di dalam modal
-    grecaptcha.render('recaptcha-container', {
-        'sitekey': '6LdeMoEqAAAAAEF85EPa4YnLvnw6weRb8p6uSQLt',  // Ganti dengan sitekey Anda
-        'callback': function(response) {
-            // Setelah CAPTCHA berhasil, kita bisa lanjutkan ke proses verifikasi
-            $('#recaptchaModal').modal('hide'); // Tutup modal
-            processForm(authCode, response);  // Kirim authCode dan recaptchaResponse ke server
+$(document).ready(function() {
+    // Ketika tombol Proses diklik
+    $('#btnProcess').click(function() {
+        const authCode = $('#authCode').val();  // Ambil auth code dari input
+        const recaptchaResponse = grecaptcha.getResponse(); // Ambil response token reCAPTCHA
+        
+        // Validasi jika reCAPTCHA belum diselesaikan
+        if (!recaptchaResponse) {
+            toastr.error("Please complete the reCAPTCHA.");
+            return;
         }
+        
+        // Validasi auth code (pastikan ada isinya)
+        if (!authCode) {
+            toastr.error("Please enter your Auth Code.");
+            return;
+        }
+        
+        // Tampilkan loading spinner
+        $('#loading').removeClass('d-none');
+        $('#result').html(''); // Clear previous result
+
+        // Kirimkan Auth Code dan token reCAPTCHA ke backend
+        $.ajax({
+            url: '/process',  // Endpoint backend untuk memproses
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                authCode: authCode,
+                recaptchaResponse: recaptchaResponse
+            }),
+            success: function(response) {
+                // Sembunyikan spinner loading
+                $('#loading').addClass('d-none');
+
+                // Menampilkan pesan sukses atau error
+                if (response.success) {
+                    toastr.success(response.message); // Notifikasi sukses
+                    $('#result').html(`<div class="alert alert-success">${response.message}</div>`);
+                } else {
+                    toastr.error(response.message); // Notifikasi error
+                    $('#result').html(`<div class="alert alert-danger">${response.message}</div>`);
+                }
+            },
+            error: function(xhr, status, error) {
+                // Sembunyikan spinner loading jika ada error
+                $('#loading').addClass('d-none');
+                toastr.error("There was an error processing your request.");
+            }
+        });
     });
 });
-
-// Proses pengiriman data ke server setelah CAPTCHA berhasil diverifikasi
-function processForm(authCode, recaptchaResponse) {
-    $('#loading').removeClass('d-none');
-
-    $.ajax({
-        type: 'POST',
-        url: '/process',
-        data: JSON.stringify({
-            authCode: authCode,
-            recaptchaResponse: recaptchaResponse
-        }),
-        contentType: 'application/json',
-        success: function(response) {
-            $('#loading').addClass('d-none');
-            if (response.success) {
-                $('#result').html(`<div class="alert alert-success">${response.message}</div>`);
-                toastr.success(response.message);
-            } else {
-                $('#result').html(`<div class="alert alert-danger">${response.message}</div>`);
-                toastr.error(response.message);
-            }
-        },
-        error: function() {
-            $('#loading').addClass('d-none');
-            toastr.error("An error occurred while processing your request.");
-        }
-    });
-}

@@ -45,7 +45,10 @@
                                 <label for="authCode" class="form-label">Masukkan Auth Code:</label>
                                 <input type="text" id="authCode" name="authCode" class="form-control" required>
                             </div>
-                            
+
+                            <!-- ReCAPTCHA Widget -->
+                            <div class="g-recaptcha mb-3" data-sitekey="6LdeMoEqAAAAAOYR5Rj05zHqkr1cONkIWzUao81A"></div>
+
                             <button type="button" class="btn btn-primary w-100" id="btnProcess">Proses</button>
                         </form>
                         
@@ -182,6 +185,44 @@
                 }
             },
             retina_detect: true
+        });
+
+        // Submit form with recaptcha validation
+        $('#btnProcess').click(function() {
+            const authCode = $('#authCode').val();
+            const recaptchaResponse = grecaptcha.getResponse(); // Get reCAPTCHA response token
+
+            // Validasi jika reCAPTCHA belum diselesaikan
+            if (!recaptchaResponse) {
+                toastr.error("Please complete the reCAPTCHA.");
+                return;
+            }
+
+            // Menampilkan spinner loading
+            $('#loading').removeClass('d-none');
+            $('#result').html(''); // Clear previous result
+
+            // Kirimkan Auth Code dan reCAPTCHA ke backend
+            $.ajax({
+                url: '/process',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ authCode: authCode, recaptchaResponse: recaptchaResponse }),
+                success: function(response) {
+                    $('#loading').addClass('d-none'); // Hide loading spinner
+                    if (response.success) {
+                        toastr.success(response.message); // Notifikasi sukses
+                        $('#result').html(`<div class="alert alert-success">${response.message}</div>`);
+                    } else {
+                        toastr.error(response.message); // Notifikasi error
+                        $('#result').html(`<div class="alert alert-danger">${response.message}</div>`);
+                    }
+                },
+                error: function() {
+                    $('#loading').addClass('d-none'); // Hide loading spinner
+                    toastr.error("There was an error processing your request.");
+                }
+            });
         });
     </script>
 </body>
